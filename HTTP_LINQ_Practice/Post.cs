@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HTTP_LINQ_Practice
 {
@@ -10,5 +11,6 @@ namespace HTTP_LINQ_Practice
         public string Body { get; set; }
         public int UserId { get; set; }
         public int Likes { get; set; }
+        public List<Comment> Comments { get; set; }
     }
 }

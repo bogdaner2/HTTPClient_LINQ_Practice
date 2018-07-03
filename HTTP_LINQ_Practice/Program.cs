@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -15,11 +15,27 @@ namespace HTTP_LINQ_Practice
             var posts = DownloadDataAsync<List<Post>>("https://5b128555d50a5c0014ef1204.mockapi.io/posts").Result;
             var todos = DownloadDataAsync<List<ToDo>>("https://5b128555d50a5c0014ef1204.mockapi.io/todos").Result;
             var comments = DownloadDataAsync<List<Comment>>("https://5b128555d50a5c0014ef1204.mockapi.io/comments").Result;
-            foreach (var VARIABLE in todos)
-            {
-                Console.WriteLine(VARIABLE.Name);
-            }
-            Console.ReadLine();
+            posts.ForEach(p => p.Comments = comments.Where(c => p.Id == c.Id).ToList());
+            users.ForEach(user => user.Posts = posts.Where(x => user.Id == x.UserId).ToList());
+            users.ForEach(user => user.ToDos = todos.Where(x => user.Id == x.UserId).ToList());
+            //var result = from User in users
+            //    join Post in posts
+            //    on User.Id equals Post.UserId
+            //    into JoinedData
+            //    from JoinedRow in JoinedData
+            //    group JoinedRow by User
+            //    into g
+            //    select new {User = g.Key, Posts = g.ToList()};
+            //foreach (var user in result)
+                
+            //{
+            //    Console.WriteLine(user.User.Name);
+            //    foreach (var post in user.Posts)
+            //    {
+            //        Console.WriteLine(post.Body);
+            //    }
+            //}
+                Console.ReadLine();
             
         }
 
@@ -33,6 +49,8 @@ namespace HTTP_LINQ_Practice
                 return JsonConvert.DeserializeObject<T>(responsJson);
             }
         }
+
+
 
     }
 }
