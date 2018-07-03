@@ -18,25 +18,12 @@ namespace HTTP_LINQ_Practice
             posts.ForEach(p => p.Comments = comments.Where(c => p.Id == c.Id).ToList());
             users.ForEach(user => user.Posts = posts.Where(x => user.Id == x.UserId).ToList());
             users.ForEach(user => user.ToDos = todos.Where(x => user.Id == x.UserId).ToList());
-            //var result = from User in users
-            //    join Post in posts
-            //    on User.Id equals Post.UserId
-            //    into JoinedData
-            //    from JoinedRow in JoinedData
-            //    group JoinedRow by User
-            //    into g
-            //    select new {User = g.Key, Posts = g.ToList()};
-            //foreach (var user in result)
-                
-            //{
-            //    Console.WriteLine(user.User.Name);
-            //    foreach (var post in user.Posts)
-            //    {
-            //        Console.WriteLine(post.Body);
-            //    }
-            //}
-                Console.ReadLine();
-            
+
+            foreach (var r in Request.UserTODOdone(5,users))
+            {
+                Console.WriteLine(r.Item1 + " |" + r.Item2);
+            }
+            Console.ReadLine();   
         }
 
         static async Task<T> DownloadDataAsync<T>(string url)
