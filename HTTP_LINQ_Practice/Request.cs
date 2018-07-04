@@ -51,7 +51,7 @@ namespace HTTP_LINQ_Practice
             });
         return result.ToList();
         }
-        public static (User,Post,int,int,Post,Post) GetStruct_User(int userId)
+        public static QueryStructUser GetStruct_User(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
             var lastPost = user?.Posts
@@ -69,9 +69,9 @@ namespace HTTP_LINQ_Practice
             })
                 .OrderByDescending(p => p.Comments.Count)
                 .FirstOrDefault();
-            return (user,lastPost,countPostComment,nonCompleteTasks,popularPostLike,popularPostComm); 
+            return new QueryStructUser(user,lastPost,countPostComment,nonCompleteTasks,popularPostLike,popularPostComm); 
         }
-        public static (Post,Comment,Comment,int) GetStruct_Post(int postId)
+        public static QueryStructPost GetStruct_Post(int postId)
         {
             var post = Users.SelectMany(x => x.Posts).FirstOrDefault(p => p.Id == postId);
             if (post == null)
@@ -79,9 +79,9 @@ namespace HTTP_LINQ_Practice
                 throw new Exception("No such Post");
             }
             var longestComment = post.Comments.OrderByDescending(c => c.Body.Length).FirstOrDefault();
-            var likestComment = post.Comments.OrderByDescending(c => c.Likes).FirstOrDefault();
+            var mostLikestComment = post.Comments.OrderByDescending(c => c.Likes).FirstOrDefault();
             var commCount = post.Comments.Where(c => c.Likes == 0 || c.Body.Length < 80).ToList().Count;
-            return (post,longestComment,likestComment,commCount);
+            return new QueryStructPost(post,longestComment,mostLikestComment,commCount);
         }
     }
 }
