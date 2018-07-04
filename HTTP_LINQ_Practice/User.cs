@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HTTP_LINQ_Practice
 {
@@ -9,11 +10,8 @@ namespace HTTP_LINQ_Practice
         public string Name { get; set; }
         public string Avatar { get; set; }
         public string Email { get; set; }
+        public List<Post> Posts { get; set; }
+        public List<ToDo> ToDos { get; set; }
 
-        //public string id { get; set; }
-        //public DateTime createdAt { get; set; }
-        //public string name { get; set; }
-        //public string avatar { get; set; }
-        //public string email { get; set; }
     }
 }

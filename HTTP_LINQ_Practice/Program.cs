@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace HTTP_LINQ_Practice
 {
@@ -11,28 +6,20 @@ namespace HTTP_LINQ_Practice
     {
         static void Main(string[] args)
         {
-            var users = DownloadDataAsync<List<User>>("https://5b128555d50a5c0014ef1204.mockapi.io/users").Result;
-            var posts = DownloadDataAsync<List<Post>>("https://5b128555d50a5c0014ef1204.mockapi.io/posts").Result;
-            var todos = DownloadDataAsync<List<ToDo>>("https://5b128555d50a5c0014ef1204.mockapi.io/todos").Result;
-            var comments = DownloadDataAsync<List<Comment>>("https://5b128555d50a5c0014ef1204.mockapi.io/comments").Result;
-            foreach (var VARIABLE in todos)
+            Menu menu = new Menu();
+            while (true)
             {
-                Console.WriteLine(VARIABLE.Name);
-            }
-            Console.ReadLine();
-            
-        }
-
-        static async Task<T> DownloadDataAsync<T>(string url)
-        {
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync(url))
-            using (HttpContent content = response.Content)
-            {
-                string responsJson = await content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(responsJson);
+                try
+                {
+                    menu.GetMenu();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Please, enter any key for continue");
+                    Console.ReadKey();
+                }
             }
         }
-
     }
 }
