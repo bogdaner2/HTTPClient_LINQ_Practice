@@ -11,22 +11,22 @@ namespace HTTP_LINQ_Practice
         public static List<(Post,int)> GetCommentsInPost(int userId)
         {     
             var result = new List<(Post,int)>();
-            var user = Users.FirstOrDefault(u => u.Id == userId);
-            user?.Posts.ForEach(p => result.Add((p,p.Comments.Count)));
+            Users
+                .FirstOrDefault(u => u.Id == userId)?
+                .Posts
+                .ForEach(p => result.Add((p, p.Comments.Count)));
             return result;
         }
-
         public static List<Comment> GetUserComments(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
             var result = from post in user?.Posts
                 let p = post.Comments
                 from comment in p
-                where comment.Body.Length > 50
+                where comment.Body.Length < 50
                 select comment;
             return result.ToList();
         }
-
         public static List<(int, string)> UserTODOdone(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
@@ -50,18 +50,18 @@ namespace HTTP_LINQ_Practice
         public static (User,Post,int,int,Post,Post) GetStruct_User(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
-            var lastPost = (Post) from post in user?.Posts
+            var lastPost = (from post in user?.Posts
                 where post.CreatedAt == user?.Posts.Max(p => p.CreatedAt)
-                select post;
-            var countPostComment = lastPost.Comments.Count;
-            var nonCompleteTasks = user.ToDos.Where(t => t.IsComplete == false).ToList().Count;
-            var popularPostLike = user.Posts.OrderByDescending(p => p.Likes).First();
-            var popularPostComm = user.Posts.Select(p =>
+                select post).FirstOrDefault();
+            var countPostComment = lastPost?.Comments.Count;
+            var nonCompleteTasks = user?.ToDos.Where(t => t.IsComplete == false).ToList().Count;
+            var popularPostLike = user?.Posts.OrderByDescending(p => p.Likes).First();
+            var popularPostComm = user?.Posts.Select(p =>
             {
                 p.Comments = p.Comments.Where(c => c.Body.Length > 80).ToList();
                 return p;
             }).OrderByDescending(p => p.Comments.Count).First();
-            return ( user,lastPost,countPostComment,nonCompleteTasks,popularPostLike,popularPostComm); 
+            return (user,lastPost,(int)countPostComment,(int)nonCompleteTasks,popularPostLike,popularPostComm); 
         }
 
         public static (Post,Comment,Comment,int) GetStruct_Post(int postId)

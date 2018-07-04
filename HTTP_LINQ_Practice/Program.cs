@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace HTTP_LINQ_Practice
 {
@@ -12,8 +7,19 @@ namespace HTTP_LINQ_Practice
         static void Main(string[] args)
         {
             Menu menu = new Menu();
-            menu.GetMenu();
-            Console.ReadLine();   
+            while (true)
+            {
+                try
+                {
+                    menu.GetMenu();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Please, enter any key for continue");
+                    Console.ReadKey();
+                }
+            }
         }
     }
 }
