@@ -26,7 +26,8 @@ namespace HTTP_LINQ_Practice
                                   "3) Show user's todo which are done\n" +
                                   "4) Show sorted users by name with descending sort of comments length \n" +
                                   "5) Get struct by user id \n" +
-                                  "6) Get struct by post id ");
+                                  "6) Get struct by post id \n" +
+                                  "7) Exit");
                 int.TryParse(Console.ReadLine(), out int choise);
                 switch (choise)
                 {
@@ -53,6 +54,9 @@ namespace HTTP_LINQ_Practice
                     case 6:
                         Console.Clear();
                         GetStructPost();
+                        break;
+                    case 7:
+                        Environment.Exit(0);
                         break;
                     default:
                         throw new Exception("Incorrect data.Please,try it again");
@@ -87,7 +91,7 @@ namespace HTTP_LINQ_Practice
         }
         private void GetCommentsInPost()
         {
-            Console.WriteLine("Input Id");
+            Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetCommentsInPost(id);
             if (result.Count == 0)
@@ -101,7 +105,7 @@ namespace HTTP_LINQ_Practice
         }
         private void GetUserComments()
         {
-            Console.WriteLine("Input Id");
+            Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetUserComments(id);
             foreach (var res in result)
@@ -111,7 +115,7 @@ namespace HTTP_LINQ_Practice
         }
         private void UserSortByTodo()
         {
-            var result = Request.UserSortByTODO();
+            var result = Request.UserSortByTodo();
             foreach (var res in result)
             {
                 Console.WriteLine($"Name : {res.Name}");
@@ -128,9 +132,9 @@ namespace HTTP_LINQ_Practice
         }
         private void UserToDoDone()
         {
-            Console.WriteLine("Input Id");
+            Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
-            var result = Request.UserTODOdone(id);
+            var result = Request.UserTodoDone(id);
             foreach (var res in result)
             {
                 Console.WriteLine($"Id : {res.Item1} - Name : {res.Item2}");
@@ -138,20 +142,29 @@ namespace HTTP_LINQ_Practice
         }
         private void GetStructUser()
         {
-            Console.WriteLine("Input Id");
+            Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetStruct_User(id);
-            Console.WriteLine(result.Item1);
-            Console.WriteLine(result.Item2);
-            Console.WriteLine(result.Item3);
-            Console.WriteLine(result.Item4);
-            Console.WriteLine(result.Item5);
-            Console.WriteLine(result.Item6);
+            if (result.Item1 != null)
+            {
+                Console.WriteLine(result.Item1);
+                Console.WriteLine(result.Item2);
+                Console.WriteLine(result.Item3);
+                Console.WriteLine(result.Item4);
+                Console.WriteLine(result.Item5);
+                Console.WriteLine(result.Item6);
+            }
+            else { Console.WriteLine("No user`s posts"); }
         }
-
         private void GetStructPost()
         {
-
+            Console.WriteLine("Input post Id");
+            int.TryParse(Console.ReadLine(), out int id);
+            var result = Request.GetStruct_Post(id);
+            Console.WriteLine($"-{result.Item1.Title}");
+            Console.WriteLine($"--{result.Item2.Body}");
+            Console.WriteLine($"--{result.Item3.Body}");
+            Console.WriteLine($"---{result.Item4}");
         }
     }
 }
