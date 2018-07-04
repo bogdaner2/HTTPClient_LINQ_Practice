@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HTTP_LINQ_Practice
+﻿namespace HTTP_LINQ_Practice
 {
     class QueryStructPost
     {
