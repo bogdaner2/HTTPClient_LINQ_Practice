@@ -151,22 +151,30 @@ namespace HTTP_LINQ_Practice
             Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetStruct_User(id);
-                Console.WriteLine($"User name : {result.Item1.Name}");
-                Console.WriteLine($"Last post : {result.Item2.Title}");
-                Console.WriteLine($"Count of comment : {result.Item3}");
-                Console.WriteLine($"Count of undone tasks : {result.Item4}");
-                Console.WriteLine($"The most popular post (by comment) : {result.Item5.Body}");
-                Console.WriteLine($"The most popular post (by like) : {result.Item6.Body}");
+            if (result != null)
+            {
+                Console.WriteLine($"User name : {result.User.Name}");
+                Console.WriteLine($"Last post : {result.LastPost.Title}");
+                Console.WriteLine($"Count of comment : {result.CountPostComments}");
+                Console.WriteLine($"Count of undone tasks : {result.NonCompleteTasks}");
+                Console.WriteLine($"The most popular post (by comment) : {result.PopularPostComm.Body}");
+                Console.WriteLine($"The most popular post (by like) : {result.PopularPostLike.Body}");
+            }
+            else { Console.WriteLine("No user`s post");}
         }
         private void GetStructPost()
         {
             Console.WriteLine("Input post Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetStruct_Post(id);
-            Console.WriteLine($"Post title : {result.Item1.Title}");
-            Console.WriteLine($"The longest comment of the post : {result.Item2.Body}");
-            Console.WriteLine($"The most liked comment of the post : {result.Item3.Body}");
-            Console.WriteLine($"Count of comments (body < 80 or likes = 0) : {result.Item4}");
+            if (result != null)
+            {
+                Console.WriteLine($"Post title : {result.Post.Title}");
+                Console.WriteLine($"The longest comment of the post : {result.LongestComment.Body}");
+                Console.WriteLine($"The most liked comment of the post : {result.MostLikedComment.Body}");
+                Console.WriteLine($"Count of comments (body < 80 or likes = 0) : {result.CountComments}");
+            }
+            else { Console.WriteLine("No such post");}
         }
     }
 }
