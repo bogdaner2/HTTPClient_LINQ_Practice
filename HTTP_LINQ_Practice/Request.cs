@@ -7,7 +7,6 @@ namespace HTTP_LINQ_Practice
      static class Request
      {
         public static List<User> Users { get; set; }
-        public static List<Post> Posts { get; set; }
         public static List<(Post,int)> GetCommentsInPost(int userId)
         {     
             var result = new List<(Post,int)>();
@@ -20,20 +19,28 @@ namespace HTTP_LINQ_Practice
         public static List<Comment> GetUserComments(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
-            var result = from post in user?.Posts
-                let p = post.Comments
-                from comment in p
-                where comment.Body.Length < 50
-                select comment;
-            return result.ToList();
+            if (user != null)
+            {
+                var result = from post in user.Posts
+                    let p = post.Comments
+                    from comment in p
+                    where comment.Body.Length < 50
+                    select comment;
+                return result.ToList();
+            }
+            return null;
         }
         public static List<(int, string)> UserTodoDone(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
-            var result = from toDo in user.ToDos
-                where toDo.IsComplete == true
-                select (toDo.Id, toDo.Name);
-            return result.ToList();
+            if (user != null)
+            {
+                var result = from toDo in user.ToDos
+                    where toDo.IsComplete == true
+                    select (toDo.Id, toDo.Name);
+                return result.ToList();
+            }        
+            return null;
         }
         public static List<User> UserSortByTodo()
         {
@@ -47,27 +54,26 @@ namespace HTTP_LINQ_Practice
         public static (User,Post,int,int,Post,Post) GetStruct_User(int userId)
         {
             var user = Users.FirstOrDefault(u => u.Id == userId);
-            var lastPost = (from post in user?.Posts
-                where post.CreatedAt == user?.Posts.Max(p => p.CreatedAt)
-                select post).FirstOrDefault();
-            if (lastPost == null)
-            {
-                return (null,null,0,0,null,null);
-            }
-            var countPostComment = lastPost?.Comments.Count;
-            var nonCompleteTasks = user?.ToDos.Where(t => t.IsComplete == false).ToList().Count;
-            var popularPostLike = user?.Posts?.OrderByDescending(p => p.Likes).FirstOrDefault();
-            var popularPostComm = user?.Posts?.Select(p =>
+            var lastPost = user?.Posts
+                .Where(post => post.CreatedAt == user.Posts.Max(p => p.CreatedAt))
+                .FirstOrDefault();               
+            if (lastPost == null) { throw new Exception("No user`s post"); }
+            var countPostComment = lastPost.Comments.Count;
+            var nonCompleteTasks = user.ToDos.Where(t => t.IsComplete == false).ToList().Count;
+            var popularPostLike = user.Posts.OrderByDescending(p => p.Likes).FirstOrDefault();
+            var popularPostComm = user.Posts
+                .Select(p =>
             {
                 p.Comments = p.Comments.Where(c => c.Body.Length > 80).ToList();
                 return p;
-            }).OrderByDescending(p => p.Comments.Count).FirstOrDefault();
-            return (user,lastPost,(int)countPostComment,(int)nonCompleteTasks,popularPostLike,popularPostComm); 
+            })
+                .OrderByDescending(p => p.Comments.Count)
+                .FirstOrDefault();
+            return (user,lastPost,countPostComment,nonCompleteTasks,popularPostLike,popularPostComm); 
         }
-
         public static (Post,Comment,Comment,int) GetStruct_Post(int postId)
         {
-            var post = Posts.FirstOrDefault(p => p.Id == postId);
+            var post = Users.SelectMany(x => x.Posts).FirstOrDefault(p => p.Id == postId);
             if (post == null)
             {
                 throw new Exception("No such Post");

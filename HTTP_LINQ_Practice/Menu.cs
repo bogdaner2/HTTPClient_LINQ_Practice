@@ -66,7 +66,6 @@ namespace HTTP_LINQ_Practice
             while (Console.ReadKey().Key != ConsoleKey.Escape);
             Environment.Exit(0);
     }
-
         private void LoadData()
         {
             var users = DownloadDataAsync<List<User>>("https://5b128555d50a5c0014ef1204.mockapi.io/users").Result;
@@ -77,7 +76,6 @@ namespace HTTP_LINQ_Practice
             users.ForEach(user => user.Posts = posts.Where(x => user.Id == x.UserId).ToList());
             users.ForEach(user => user.ToDos = todos.Where(x => user.Id == x.UserId).ToList());
             Request.Users = users;
-            Request.Posts = posts;
         }
         private async Task<T> DownloadDataAsync<T>(string url)
         {
@@ -108,10 +106,12 @@ namespace HTTP_LINQ_Practice
             Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetUserComments(id);
-            foreach (var res in result)
+            if (result != null)
             {
-                Console.WriteLine($"Comment : {res.Body}");
+                if(result.Count == 0) { Console.WriteLine("No results found"); }
+                result.ForEach(res =>Console.WriteLine($"Comment : {res.Body}"));
             }
+            else { Console.WriteLine("No such user"); }
         }
         private void UserSortByTodo()
         {
@@ -135,36 +135,38 @@ namespace HTTP_LINQ_Practice
             Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.UserTodoDone(id);
-            foreach (var res in result)
+            if (result != null)
             {
-                Console.WriteLine($"Id : {res.Item1} - Name : {res.Item2}");
+                if (result.Count != 0)
+                {
+                    result.ForEach(res => Console.WriteLine($"Id : {res.Item1} - Name : {res.Item2}"));
+                }
+                else { Console.WriteLine("No todos"); }
             }
+            else { Console.WriteLine("No such user");}
+
         }
         private void GetStructUser()
         {
             Console.WriteLine("Input user Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetStruct_User(id);
-            if (result.Item1 != null)
-            {
-                Console.WriteLine(result.Item1);
-                Console.WriteLine(result.Item2);
-                Console.WriteLine(result.Item3);
-                Console.WriteLine(result.Item4);
-                Console.WriteLine(result.Item5);
-                Console.WriteLine(result.Item6);
-            }
-            else { Console.WriteLine("No user`s posts"); }
+                Console.WriteLine($"User name : {result.Item1.Name}");
+                Console.WriteLine($"Last post : {result.Item2.Title}");
+                Console.WriteLine($"Count of comment : {result.Item3}");
+                Console.WriteLine($"Count of undone tasks : {result.Item4}");
+                Console.WriteLine($"The most popular post (by comment) : {result.Item5.Body}");
+                Console.WriteLine($"The most popular post (by like) : {result.Item6.Body}");
         }
         private void GetStructPost()
         {
             Console.WriteLine("Input post Id");
             int.TryParse(Console.ReadLine(), out int id);
             var result = Request.GetStruct_Post(id);
-            Console.WriteLine($"-{result.Item1.Title}");
-            Console.WriteLine($"--{result.Item2.Body}");
-            Console.WriteLine($"--{result.Item3.Body}");
-            Console.WriteLine($"---{result.Item4}");
+            Console.WriteLine($"Post title : {result.Item1.Title}");
+            Console.WriteLine($"The longest comment of the post : {result.Item2.Body}");
+            Console.WriteLine($"The most liked comment of the post : {result.Item3.Body}");
+            Console.WriteLine($"Count of comments (body < 80 or likes = 0) : {result.Item4}");
         }
     }
 }
