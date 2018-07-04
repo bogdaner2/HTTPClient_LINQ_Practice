@@ -72,9 +72,9 @@ namespace HTTP_LINQ_Practice
             var posts = DownloadDataAsync<List<Post>>("https://5b128555d50a5c0014ef1204.mockapi.io/posts").Result;
             var todos = DownloadDataAsync<List<ToDo>>("https://5b128555d50a5c0014ef1204.mockapi.io/todos").Result;
             var comments = DownloadDataAsync<List<Comment>>("https://5b128555d50a5c0014ef1204.mockapi.io/comments").Result;
-            posts.ForEach(p => p.Comments = comments.Where(c => p.Id == c.PostId).ToList());
-            users.ForEach(user => user.Posts = posts.Where(x => user.Id == x.UserId).ToList());
-            users.ForEach(user => user.ToDos = todos.Where(x => user.Id == x.UserId).ToList());
+            posts.ForEach(p => p.Comments = comments.Where(c => c.PostId == p.Id).ToList());
+            users.ForEach(user => user.Posts = posts.Where(x => x.UserId == user.Id).ToList());
+            users.ForEach(user => user.ToDos = todos.Where(x => x.UserId == user.Id).ToList());
             Request.Users = users;
         }
         private async Task<T> DownloadDataAsync<T>(string url)
